@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/script.js" defer></script>
+    <script src="ChatGPT.js?v=12"></script>
+    <title>D&AI</title>
+  </head>
+  <body onload="OnLoad()">
+    <!-- Login Form -->
+    <section class="login">
+      <form action="#" class="login__form">
+        <div class="login__group">
+          <h2 class="login__title">Welcome back</h2>
+          <input
+            type="text"
+            class="login__input"
+            placeholder="Email"
+            id="login-user"
+            required
+          />
+          <label for="login-user" class="login__label">Email</label>
+        </div>
+        <div class="login__group">
+          <input
+            type="password"
+            class="login__input"
+            placeholder="Password"
+            id="login-pass"
+            required
+          />
+          <label for="login-pass" class="login__label">Password</label>
+        </div>
+        <div class="login__group">
+          <button class="btn btn--green login__button">Continue</button>
+          <p class="login__signup">
+            Don't have an account?
+            <a class="btn-text auth-panel" href="#">Sign up</a>
+          </p>
+        </div>
+      </form>
+    </section>
+    <!-- Signup Form -->
+    <section class="signup">
+      <form action="#" class="signup__form">
+        <div class="signup__group">
+          <h2 class="signup__title">Create your account</h2>
+          <input
+            type="text"
+            class="signup__input"
+            placeholder="Username"
+            id="signup-user"
+            required
+          />
+          <label for="signup-user" class="signup__label">Username</label>
+        </div>
+        <div class="signup__group">
+          <input
+            type="email"
+            class="signup__input"
+            placeholder="Email"
+            id="signup-email"
+            required
+          />
+          <label for="signup-email" class="signup__label">Email</label>
+        </div>
+        <div class="signup__group">
+          <input
+            type="password"
+            class="signup__input"
+            placeholder="Password"
+            id="signup-pass"
+            required
+          />
+          <label for="signup-pass" class="signup__label">Password</label>
+        </div>
+        <div class="signup__group">
+          <input
+            type="password"
+            class="signup__input"
+            placeholder="Confirm Password"
+            id="signup-passconfirm"
+            required
+          />
+          <label for="signup-pass" class="signup__label"
+            >Confirm Password</label
+          >
+        </div>
+        <div class="signup__group">
+          <button class="btn btn--green signup__button">Continue</button>
+          <p class="signup__signup">
+            You have an account?
+            <a class="btn-text auth-panel" href="#">Log in</a>
+          </p>
+        </div>
+      </form>
+    </section>
+    <main class="main-container">
+      <!-- Sidebar -->
+      <aside class="settings">
+        <!-- Categories -->
+        <div class="categories">
+          <h2 class="categories__title">Create a New Game</h2>
+          <div class="categories__category" id="fantasy">
+            <h3 class="categories__category-name">Fantasy</h3>
+            <ion-icon
+              class="categories__category-icon"
+              name="arrow-dropright"
+            ></ion-icon>
+          </div>
+          <div class="categories__category" id="sci-fi">
+            <h3 class="categories__category-name">Sci-Fi</h3>
+            <ion-icon
+              class="categories__category-icon"
+              name="arrow-dropright"
+            ></ion-icon>
+          </div>
+          <div class="categories__category" id="mystery">
+            <h3 class="categories__category-name">Mystery</h3>
+            <ion-icon
+              class="categories__category-icon"
+              name="arrow-dropright"
+            ></ion-icon>
+          </div>
+        </div>
+        <!-- Export to PDF -->
+        <div class="settings__data">
+          <!-- <button class="btn btn--white btn--export">Export to PDF</button> -->
+          <div class="settings__profile">
+            <figure class="settings__profile-img">
+              <img
+                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg"
+              />
+            </figure>
+            <span class="settings__profile-status">Playing as</span>
+            <h2 class="settings__profile-name"></h2>
+            <ion-icon class="settings__profile-btn logout-button" name="log-out"></ion-icon>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Character Form -->
+      <section class="character">
+        <form action="#" class="character__form">
+          <div class="character__form-group">
+            <h2 class="character__form-title">World</h2>
+            <div class="character__form__radio-group">
+              <input type="radio" class="character__form__radio-input" id="azeroth" name="world">
+              <label for="azeroth" class="character__form__radio-label">
+                <span class="character__form__radio-button"></span>
+                Azeroth
+              </label>
+            </div>
+            <div class="character__form__radio-group">
+              <input type="radio" class="character__form__radio-input" id="faerun" name="world">
+              <label for="faerun" class="character__form__radio-label">
+                <span class="character__form__radio-button"></span>
+                Faerun
+              </label>
+            </div>
+            <div class="character__form__radio-group">
+              <input type="radio" class="character__form__radio-input" id="westeros" name="world">
+              <label for="westeros" class="character__form__radio-label">
+                <span class="character__form__radio-button"></span>
+                Westeros
+              </label>
+            </div>
+          </div>
+
+          <div class="character__form-group">
+            <h2 class="character__form-title">Race</h2>
+            <div class="character__form__radio-group">
+              <input type="radio" class="character__form__radio-input" id="human" name="race">
+              <label for="human" class="character__form__radio-label">
+                <span class="character__form__radio-button"></span>
+                Human
+              </label>
+            </div>
+            <div class="character__form__radio-group">
+              <input type="radio" class="character__form__radio-input" id="elf" name="race">
+              <label for="elf" class="character__form__radio-label">
+                <span class="character__form__radio-button"></span>
+                Elf
+              </label>
+            </div>
+            <div class="character__form__radio-group">
+              <input type="radio" class="character__form__radio-input" id="dwarf" name="race">
+              <label for="dwarf" class="character__form__radio-label">
+                <span class="character__form__radio-button"></span>
+                Dwarf
+              </label>
+            </div>
+            <div class="character__form__radio-group">
+              <input type="radio" class="character__form__radio-input" id="gnome" name="race">
+              <label for="gnome" class="character__form__radio-label">
+                <span class="character__form__radio-button"></span>
+                Gnome
+              </label>
+            </div>
+          </div>
+          <div class="character__form-group">
+            <h2 class="character__form-title">Class</h2>
+            <div class="character__form__radio-group">
+              <input type="radio" class="character__form__radio-input" id="wizard" name="class">
+              <label for="wizard" class="character__form__radio-label">
+                <span class="character__form__radio-button"></span>
+                Wizard
+              </label>
+            </div>
+            <div class="character__form__radio-group">
+              <input type="radio" class="character__form__radio-input" id="fighter" name="class">
+              <label for="fighter" class="character__form__radio-label">
+                <span class="character__form__radio-button"></span>
+                Fighter
+              </label>
+            </div>
+            <div class="character__form__radio-group">
+              <input type="radio" class="character__form__radio-input" id="cleric" name="class">
+              <label for="cleric" class="character__form__radio-label">
+                <span class="character__form__radio-button"></span>
+                Cleric
+              </label>
+            </div>
+            <div class="character__form__radio-group">
+              <input type="radio" class="character__form__radio-input" id="barbarian" name="class">
+              <label for="barbarian" class="character__form__radio-label">
+                <span class="character__form__radio-button"></span>
+                Barbarian
+              </label>
+            </div>
+            <div class="character__form__radio-group">
+              <input type="radio" class="character__form__radio-input" id="paladin" name="class">
+              <label for="paladin" class="character__form__radio-label">
+                <span class="character__form__radio-button"></span>
+                Paladin
+              </label>
+            </div>
+            </div>
+            <button class="btn btn--green character__form-btn">Submit</button>
+          </div>
+        </form>
+      </section>
+      <!-- Chat -->
+      <section class="chat">
+        <div class="chat-title">
+          <figure class="avatar">
+            <img
+              src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg"
+            />
+          </figure>
+          <h1>D&AI Chat</h1>
+        </div>
+        <div class="messages"></div>
+        <div class="message-box">
+          <textarea
+            type="text"
+            class="message-input"
+            placeholder="Type message..."
+            id="txtMsg"
+          ></textarea>
+          <div class="message-controls">
+            <label class="message-speak" id="lblSpeak"
+              ><input
+              id="chkSpeak"
+              class="message-checkbox"
+              type="checkbox"
+              onclick="SpeechToText()"
+              /><span class="message-speak-text">Listen</span>
+            </label>
+            <button type="submit" class="message-submit" onclick="Send()">
+              Send
+            </button>
+          </div>
+        </div>
+
+      </section>
+      <!-- Image -->
+      <section class="image-container">
+        <figure class="image">
+          <img id="image" src="https://source.unsplash.com/random/192x192" />
+        </figure>
+      </section>
+    </main>
+    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+
+     <!--Internal code for the chat-->
+     <div id="idContainer" style="visibility: hidden">
+      <textarea
+        id="txtOutput"
+        rows="10"
+        style="margin-top: 10px; width: 100%"
+        placeholder="Output"
+        onchange="GetLastGPTMessage()"
+      ></textarea>
+
+      <div>
+        <button type="button" onclick="Send()" id="btnSend">Send</button>
+        <label id="lblSpea"
+          ><input
+            id="chkSpea"
+            type="checkbox"
+            onclick="SpeechToText()"
+          />Listen</label
+        >
+        <label id="lblMute"
+          ><input
+            id="chkMute"
+            type="checkbox"
+            onclick="Mute(this.checked)"
+          />Mute</label
+        >
+
+        <select id="selModel">
+          <option value="text-davinci-003">text-davinci-003</option>
+          <option value="text-davinci-002">text-davinci-002</option>
+          <option value="code-davinci-002">code-davinci-002</option>
+        </select>
+
+        <select id="selLang" onchange="ChangeLang(this)">
+          <option value="en-US">English (United States)</option>
+          <option value="fr-FR">French (France)</option>
+          <option value="ru-RU">Russian (Russia)</option>
+          <option value="pt-BR">Portuguese (Brazil)</option>
+          <option value="es-ES">Spanish (Spain)</option>
+          <option value="de-DE">German (Germany)</option>
+          <option value="it-IT">Italian (Italy)</option>
+          <option value="pl-PL">Polish (Poland)</option>
+          <option value="nl-NL">Dutch (Netherlands)</option>
+        </select>
+
+        <select id="selVoices"></select>
+      </div>
+
+      <textarea
+        rows="5"
+        wrap="soft"
+        style="width: 98%; margin-left: 3px; margin-top: 6px"
+        placeholder="Input Text"
+      ></textarea>
+      <div onclick="GetLastGPTMessage()">
+        <p id="sampleLastMessage">Imagine that we are playing a fantasy RPG, I am the hero who was called into this world, and you are the storyteller. I am an ordinary mortal. All your offers are no more than two sentences.</p>
+      </div>
+  </body>
+</html>
