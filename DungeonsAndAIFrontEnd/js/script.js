@@ -338,7 +338,6 @@ function Send() {
 
       try {
         oJson = JSON.parse(oHttp.responseText);
-        console.log(oJson);
       } catch (ex) {
         txtOutput.value += "Error: " + ex.message
       }
@@ -346,7 +345,7 @@ function Send() {
       if (oJson.error && oJson.error.message) {
         txtOutput.value += "Error: " + oJson.error.message;
       } else if (oJson.choices && oJson.choices[0].message.content) {
-        var s = oJson.choices[0].text;
+        var s = oJson.choices[0].message.content;
 
         if (selLang.value != "en-US") {
           var a = s.split("?\n");
@@ -360,17 +359,19 @@ function Send() {
         var element = document.getElementById("sampleLastMessage");
         element.innerHTML = s;
         var text = element.innerHTML
-        fetch("http://127.0.0.1:7860/sdapi/v1/txt2img", {
-          method: "POST",
-          body: JSON.stringify({'prompt': text, 'width':'128', 'height':'128'}),
-          headers: {
-            "Content-type": "application/json; charset=UTF-8"
-          }
-        })
-          .then((response) => response.json())
-          .then((json) => createImage(json))
-          .then(() => renderBotMarkup(s))
-          .then(() => TextToSpeech(s))
+        // fetch("http://127.0.0.1:7860/sdapi/v1/txt2img", {
+        //   method: "POST",
+        //   body: JSON.stringify({'prompt': text, 'width':'128', 'height':'128'}),
+        //   headers: {
+        //     "Content-type": "application/json; charset=UTF-8"
+        //   }
+        // })
+        //   .then((response) => response.json())
+        //   .then((json) => createImage(json))
+        //   .then(() => renderBotMarkup(s))
+        //   .then(() => TextToSpeech(s))
+        renderBotMarkup(s);
+        TextToSpeech(s);
 
         function createImage(code){
           var image = document.getElementById("image")
@@ -380,7 +381,7 @@ function Send() {
     }
   };
 
-  var sModel = "gpt-3.5-turbo-instruct"
+  var sModel = "gpt-3.5-turbo"
   var iMaxTokens = 2048;
   var sUserId = "1";
   var dTemperature = 0.5;
@@ -388,7 +389,12 @@ function Send() {
 
   var data = {
     model: sModel,
-    prompt: element + sQuestion,
+    messages: [
+      {
+          role: "user",
+          content: element + sQuestion
+      }
+    ],
     max_tokens: iMaxTokens,
     user: sUserId,
     temperature: dTemperature,
