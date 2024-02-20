@@ -338,13 +338,14 @@ function Send() {
 
       try {
         oJson = JSON.parse(oHttp.responseText);
+        console.log(oJson);
       } catch (ex) {
         txtOutput.value += "Error: " + ex.message
       }
 
       if (oJson.error && oJson.error.message) {
         txtOutput.value += "Error: " + oJson.error.message;
-      } else if (oJson.choices && oJson.choices[0].text) {
+      } else if (oJson.choices && oJson.choices[0].message.content) {
         var s = oJson.choices[0].text;
 
         if (selLang.value != "en-US") {
@@ -379,7 +380,7 @@ function Send() {
     }
   };
 
-  var sModel = selModel.value;// "text-davinci-003";
+  var sModel = "gpt-3.5-turbo-instruct"
   var iMaxTokens = 2048;
   var sUserId = "1";
   var dTemperature = 0.5;

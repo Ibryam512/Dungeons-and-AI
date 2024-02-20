@@ -19,6 +19,11 @@ namespace DungeonsAndArtificialIntelligenceAPI.BLL.Profiles
 
             CreateMap<Story, StoryViewModel>()
                 .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages));
+
+            CreateMap<MessageBindingModel, Message>()
+                .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => DateTime.Now));
+
+            CreateMap<Message, MessageViewModel>();
         }
     }
 }

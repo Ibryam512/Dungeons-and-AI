@@ -10,8 +10,4 @@
     <PackageReference Include="MySql.EntityFrameworkCore" Version="6.0.10" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DungeonsAndArtificialIntelligenceAPI.Common\DungeonsAndArtificialIntelligenceAPI.Common.csproj" />
-  </ItemGroup>
-
 </Project>

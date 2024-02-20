@@ -18,9 +18,14 @@ namespace DungeonsAndArtificalIntelligenceAPI.Controllers
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginBindingModel loginBindingModel)
         {
-            var token = this._userService.Login(loginBindingModel);
+            var response = this._userService.Login(loginBindingModel);
 
-            return Ok(token);
+            if (response.Status == "Not found")
+                return NotFound();
+            else if (response.Status == "Login was unsuccessful")
+                return Unauthorized();
+
+            return Ok(response);
         }
 
         [HttpPost("Register")]
@@ -28,7 +33,7 @@ namespace DungeonsAndArtificalIntelligenceAPI.Controllers
         {
             this._userService.Register(registerBindingModel);
 
-            return Ok(); //TODO: return 201
+            return StatusCode(201);
         }
     }
 }

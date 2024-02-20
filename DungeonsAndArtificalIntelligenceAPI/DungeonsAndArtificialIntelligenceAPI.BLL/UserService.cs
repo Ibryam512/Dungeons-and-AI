@@ -4,6 +4,7 @@ using DungeonsAndArtificialIntelligenceAPI.BLL.Interfaces;
 using DungeonsAndArtificialIntelligenceAPI.Data.Entities;
 using DungeonsAndArtificialIntelligenceAPI.Data.Repositories;
 using DungeonsAndArtificialIntelligenceAPI.Models.BindingModels;
+using DungeonsAndArtificialIntelligenceAPI.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -27,21 +28,32 @@ namespace DungeonsAndArtificialIntelligenceAPI.BLL
             this._config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
-        public string Login(LoginBindingModel loginBindingModel)
+        public LoginResponeViewModel Login(LoginBindingModel loginBindingModel)
         {
             var user = this._userRepository.Get(user => user.Email == loginBindingModel.Email);
 
             if (user == null)
             {
-                return "Not found";
+                return new LoginResponeViewModel
+                {
+                    Status = "Not found"
+                };
             }
 
             if (!Hasher.VerifyPassword(loginBindingModel.Password, user.PasswordHash))
             {
-                return "Login was unsuccessful";
+                return new LoginResponeViewModel
+                {
+                    Status = "Login was unsuccessful"
+                };
             }
 
-            return GenerateToken(user);     
+            return new LoginResponeViewModel
+            {
+                Status = "Login was successful",
+                Token = GenerateToken(user),
+                UserName = user.UserName
+            };     
         }
 
         public void Register(RegisterBindingModel registerBinding)
@@ -57,24 +69,35 @@ namespace DungeonsAndArtificialIntelligenceAPI.BLL
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim("Id", user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Jti,
+                Guid.NewGuid().ToString())
             };
 
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-                _config["Jwt:Audience"],
-                claims,
-                expires: DateTime.Now.AddMinutes(15),
-                signingCredentials: credentials);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddMinutes(15),
+                Issuer = _config["Jwt:Issuer"],
+                Audience = _config["Jwt:Audience"],
+                SigningCredentials = credentials
+            };
 
-            string finalToken = new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var jwtToken = tokenHandler.WriteToken(token);
+            var stringToken = tokenHandler.WriteToken(token);
+
             this._userTokenRepository.Add(new UserToken
             {
                 UserId = user.Id,
-                Token = finalToken,
+                Token = stringToken,
                 CreationDate = DateTime.Now
             });
 
-            return finalToken;
+            return stringToken;
         }
     }
 }

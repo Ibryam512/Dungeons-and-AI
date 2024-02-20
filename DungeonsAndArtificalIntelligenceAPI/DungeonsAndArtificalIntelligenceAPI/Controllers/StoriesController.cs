@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DungeonsAndArtificalIntelligenceAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     public class StoriesController : ControllerBase
     {
@@ -17,20 +18,20 @@ namespace DungeonsAndArtificalIntelligenceAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetStories()
+        public IActionResult GetStories([FromQuery] string token)
         {
-            var stories = this._storyService.GetStories();
+            var stories = this._storyService.GetStoriesById(token);
 
             return Ok(stories);
         }
 
-        //[Authorize]
         [HttpPost]
-        public IActionResult AddStory(StoryBindingModel storyBindingModel)
+        public IActionResult AddStory([FromQuery] string token, [FromBody] StoryBindingModel storyBindingModel)
         {
-            this._storyService.AddStory(storyBindingModel);
+            this._storyService.AddStory(storyBindingModel, token);
+            var story = this._storyService.GetStories().OrderByDescending(x => x.CreationDate).First();
 
-            return Ok();
+            return Created("", story);
         }
     }
 }

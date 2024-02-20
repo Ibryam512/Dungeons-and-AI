@@ -3,9 +3,9 @@ using DungeonsAndArtificialIntelligenceAPI.Models.ViewModels;
 
 namespace DungeonsAndArtificialIntelligenceAPI.BLL.Interfaces
 {
-    public interface IUserService
+    public interface IMessageService
     {
-        LoginResponeViewModel Login(LoginBindingModel loginBindingModel);
-        void Register(RegisterBindingModel registerBindingModel);
+        List<MessageViewModel> GetMessages(int storyId);
+        void AddMessage(MessageBindingModel messageBindingModel, int storyId);
     }
 }
