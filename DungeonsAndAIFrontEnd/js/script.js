@@ -341,12 +341,17 @@ function hideContainers() {
 
 function Send() {
   var sQuestion = txtMsg.value;
-  renderUserMarkup(sQuestion);
+
   if (sQuestion == "") {
     alert("Type in your question!");
     txtMsg.focus();
     return;
   }
+
+  // Show the user's question first
+  renderUserMarkup(sQuestion);
+  // Then show the bot's response
+  renderBotMarkup("", true);
 
   var oHttp = new XMLHttpRequest();
   oHttp.open("POST", "https://api.openai.com/v1/chat/completions");
@@ -548,18 +553,35 @@ function getCurrentTime() {
   return `${hours}:${minutes}`;
 }
 
-function renderBotMarkup(message) {
+function renderBotMarkup(message, isLoading = false) {
   const messages = document.querySelector(".messages");
   const currentTime = getCurrentTime();
-  const markup = `
-    <div class="message new">
-        <figure class="avatar">
-            <img
-                src="img/avatar.jpg"
-            />
-        </figure>${message}
-        <div class="timestamp">${currentTime}</div>
-    </div>`;
+  let markup;
+
+  if (!isLoading) {
+    let loadingMessage = document.getElementById("loadingMessage");
+    if (loadingMessage) {
+      loadingMessage.parentNode.removeChild(loadingMessage); // Remove the loading message from the DOM
+    }
+  }
+
+  if (isLoading) {
+    markup = `
+      <div class="message new" id="loadingMessage">
+          <figure class="avatar">
+              <img src="img/avatar.jpg" />
+          </figure>Loading...
+          <div class="timestamp">${currentTime}</div>
+      </div>`;
+  } else {
+    markup = `
+      <div class="message new">
+          <figure class="avatar">
+              <img src="img/avatar.jpg" />
+          </figure>${message}
+          <div class="timestamp">${currentTime}</div>
+      </div>`;
+  }
   messages.insertAdjacentHTML("beforeend", markup);
 }
 
