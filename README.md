@@ -19,6 +19,7 @@ Welcome to Dungeons and AI, an interactive chat-based adventure game where your 
 - [npm](https://www.npmjs.com/get-npm)
 - [OpenAI API Key](https://platform.openai.com/api-keys)
 - Visual Studio 2022
+- SQL Server Express or SQL Server Developer Edition
 - Visual Studio Code or any other code editor
 
 To get started with Dungeons and AI, follow these steps:
@@ -60,6 +61,11 @@ To get started with Dungeons and AI, follow these steps:
    Access the application through `http://localhost:8080` in your web browser.
 
 6. **To run the backend,** open the solution file `DungeonsAndArtificalIntelligenceAPI.sln` located in the `DungeonsAndArtificalIntelligenceAPI` folder in Visual Studio 2022 and run the application.
+7. Update the `appsettings.json` file in the `DungeonsAndArtificalIntelligenceAPI` project with your SQL Server connection string if you are not using SQL Server Express.
+8. **To run the database migrations,** open the Package Manager Console in Visual Studio 2022 and run the following command:
+   ```sh
+   Update-Database
+   ```
 
 ## How to Play
 
