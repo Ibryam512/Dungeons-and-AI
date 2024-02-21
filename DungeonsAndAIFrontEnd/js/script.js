@@ -1,9 +1,9 @@
 "use strict";
 
-var OPENAI_API_KEY = "<api-key>";
+var OPENAI_API_KEY = "INSERT YOUR API KEY HERE";
 var bTextToSpeechSupported = true;
 var bSpeechInProgress = true;
-var oSpeechRecognizer = null
+var oSpeechRecognizer = null;
 var oSpeechSynthesisUtterance = null;
 var oVoices = null;
 var apiUrl = "https://localhost:7220/api";
@@ -20,18 +20,18 @@ const validatePassword = function () {
   if (password !== confirmPassword) {
     confirmPassword.setCustomValidity("Passwords Don't Match");
   }
-  confirmPassword.setCustomValidity('');
+  confirmPassword.setCustomValidity("");
 };
 
-document.querySelectorAll('.auth-panel').forEach(item => {
-  item.addEventListener('click', event => {
+document.querySelectorAll(".auth-panel").forEach((item) => {
+  item.addEventListener("click", (event) => {
     event.preventDefault();
     clickedLabel = !clickedLabel;
     let loginForm = document.querySelector(".login");
     let registrationForm = document.querySelector(".signup");
-    loginForm.style.display = (clickedLabel) ? "block" : "none";
-    registrationForm.style.display = (!clickedLabel) ? "block" : "none";
-  })
+    loginForm.style.display = clickedLabel ? "block" : "none";
+    registrationForm.style.display = !clickedLabel ? "block" : "none";
+  });
 });
 
 // password.onchange = validatePassword;
@@ -43,8 +43,8 @@ function Login() {
 
   let params = {
     email: email,
-    password: password
-  }
+    password: password,
+  };
 
   var oHttp = new XMLHttpRequest();
   oHttp.open("POST", `${apiUrl}/Auth/Login`);
@@ -53,17 +53,18 @@ function Login() {
 
   oHttp.send(JSON.stringify(params));
 
-  oHttp.onreadystatechange = function() {
+  oHttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       let response = JSON.parse(oHttp.response);
       localStorage.setItem("token", response.token);
       let loginForm = document.querySelector(".login");
       loginForm.style.display = "none";
-      document.querySelector(".settings__profile-name").innerHTML = response.userName;
-      document.querySelector(".image-container").style.display = "block";
+      document.querySelector(".settings__profile-name").innerHTML =
+        response.userName;
+      document.querySelector(".image-container").style.display = "none";
       document.querySelector(".main-container").style.display = "flex";
     }
-  }
+  };
 }
 
 function Register() {
@@ -74,8 +75,8 @@ function Register() {
   let params = {
     userName: userName,
     email: email,
-    password: password
-  }
+    password: password,
+  };
 
   var oHttp = new XMLHttpRequest();
   oHttp.open("POST", `${apiUrl}/Auth/Register`);
@@ -84,14 +85,14 @@ function Register() {
 
   oHttp.send(JSON.stringify(params));
 
-  oHttp.onreadystatechange = function() {
+  oHttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       let loginForm = document.querySelector(".login");
       let registrationForm = document.querySelector(".signup");
       loginForm.style.display = "block";
       registrationForm.style.display = "none";
     }
-  }
+  };
 }
 
 document.querySelector(".logout-button").addEventListener("click", (event) => {
@@ -108,15 +109,22 @@ document.querySelector(".signup__button").addEventListener("click", (event) => {
   Register();
 });
 
-document.querySelector(".character__form-btn").addEventListener("click", (event) => {
-  event.preventDefault();
-  CreateStory(category);
-})
+document
+  .querySelector(".character__form-btn")
+  .addEventListener("click", (event) => {
+    event.preventDefault();
+    CreateStory(category);
+  });
 
 function LogOut() {
+  const loginForm = document.querySelector(".login");
+  const welcomeScreen = document.querySelector(".welcome");
+
   localStorage.removeItem("token");
-  let loginForm = document.querySelector(".login");
+
   loginForm.style.display = "block";
+  welcomeScreen.style.display = "block";
+
   document.querySelector(".settings__profile-name").innerHTML = "";
   clearFields();
   hideContainers();
@@ -127,23 +135,23 @@ function GeneratePlayer() {
   let raceText;
   let classTypeText;
 
-  let value = document.getElementsByName('world');
-  for (var radio of value){
-    if (radio.checked) {    
+  let value = document.getElementsByName("world");
+  for (var radio of value) {
+    if (radio.checked) {
       worldTypeText = radio.id;
     }
   }
 
-  value = document.getElementsByName('race');
-  for (var radio of value){
-    if (radio.checked) {    
+  value = document.getElementsByName("race");
+  for (var radio of value) {
+    if (radio.checked) {
       raceText = radio.id;
     }
   }
 
-  value = document.getElementsByName('class');
-  for (var radio of value){
-    if (radio.checked) {    
+  value = document.getElementsByName("class");
+  for (var radio of value) {
+    if (radio.checked) {
       classTypeText = radio.id;
     }
   }
@@ -206,14 +214,30 @@ function clearFields() {
 ///////////////////////////
 // Chatbot
 
-document.querySelectorAll('.categories__category').forEach(item => {
-  item.addEventListener('click', event => {
+document.querySelectorAll(".categories__category").forEach((item) => {
+  item.addEventListener("click", (event) => {
     event.preventDefault();
     category = item.id;
+    clearChatMessages();
+    stopSpeechSynthesis();
     document.querySelector(".character").style.display = "block";
     document.querySelector(".chat").style.display = "none";
-  })
+    document.querySelector(".welcome").style.display = "none";
+  });
 });
+
+// When a user starts a new chat, the chat messages should be cleared
+function clearChatMessages() {
+  const chatContainer = document.querySelector(".messages");
+  chatContainer.innerHTML = ""; // This clears all child elements
+}
+
+// On a new chat, any speech synthesis should be stopped
+function stopSpeechSynthesis() {
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+}
 
 function CreateStory(category) {
   let character = GeneratePlayer();
@@ -222,7 +246,7 @@ function CreateStory(category) {
     category: getCategoryNumber(category),
     world: character[0],
     race: character[1],
-    class: character[2]
+    class: character[2],
   };
 
   let token = localStorage.getItem("token");
@@ -233,19 +257,20 @@ function CreateStory(category) {
   oHttp.setRequestHeader("Authorization", `Bearer ${token}`);
   oHttp.send(JSON.stringify(params));
 
-  oHttp.onreadystatechange = function() {
+  oHttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 201) {
       let response = JSON.parse(oHttp.response);
       localStorage.setItem("active-story", `${response.id}`);
       document.querySelector(".character").style.display = "none";
       document.querySelector(".chat").style.display = "block";
+      document.querySelector(".image-container").style.display = "flex";
     }
-  }
+  };
 }
 
 function AddMessage(message) {
   let params = {
-    category: getCategoryNumber(category)
+    category: getCategoryNumber(category),
   };
 
   let token = localStorage.getItem("token");
@@ -256,12 +281,12 @@ function AddMessage(message) {
   oHttp.setRequestHeader("Authorization", `Bearer ${token}`);
   oHttp.send(JSON.stringify(params));
 
-  oHttp.onreadystatechange = function() {
+  oHttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 201) {
       let response = JSON.parse(oHttp.response);
       localStorage.setItem("active-story", `${response.id}`);
     }
-  }
+  };
 }
 
 function getCategoryNumber(category) {
@@ -272,7 +297,7 @@ function getCategoryNumber(category) {
       return 1;
     case "mystery":
       return 2;
-  }  
+  }
 }
 
 function OnLoad() {
@@ -282,7 +307,7 @@ function OnLoad() {
     lblSpeak.style.display = "none";
   }
 
-  if ('speechSynthesis' in window) {
+  if ("speechSynthesis" in window) {
     bTextToSpeechSupported = true;
 
     speechSynthesis.onvoiceschanged = function () {
@@ -315,7 +340,6 @@ function hideContainers() {
 }
 
 function Send() {
-
   var sQuestion = txtMsg.value;
   renderUserMarkup(sQuestion);
   if (sQuestion == "") {
@@ -328,18 +352,18 @@ function Send() {
   oHttp.open("POST", "https://api.openai.com/v1/chat/completions");
   oHttp.setRequestHeader("Accept", "application/json");
   oHttp.setRequestHeader("Content-Type", "application/json");
-  oHttp.setRequestHeader("Authorization", "Bearer " + OPENAI_API_KEY)
+  oHttp.setRequestHeader("Authorization", "Bearer " + OPENAI_API_KEY);
 
   oHttp.onreadystatechange = function () {
     if (oHttp.readyState === 4) {
       //console.log(oHttp.status);
-      var oJson = {}
+      var oJson = {};
       if (txtOutput.value != "") txtOutput.value += "\n";
 
       try {
         oJson = JSON.parse(oHttp.responseText);
       } catch (ex) {
-        txtOutput.value += "Error: " + ex.message
+        txtOutput.value += "Error: " + ex.message;
       }
 
       if (oJson.error && oJson.error.message) {
@@ -358,56 +382,56 @@ function Send() {
         txtOutput.value += "Chat GPT: " + s;
         var element = document.getElementById("sampleLastMessage");
         element.innerHTML = s;
-        var text = element.innerHTML
+        var text = element.innerHTML;
         // fetch("http://127.0.0.1:7860/sdapi/v1/txt2img", {
         //   method: "POST",
-        //   body: JSON.stringify({'prompt': text, 'width':'128', 'height':'128'}),
+        //   body: JSON.stringify({ prompt: text, width: "128", height: "128" }),
         //   headers: {
-        //     "Content-type": "application/json; charset=UTF-8"
-        //   }
+        //     "Content-type": "application/json; charset=UTF-8",
+        //   },
         // })
         //   .then((response) => response.json())
         //   .then((json) => createImage(json))
         //   .then(() => renderBotMarkup(s))
-        //   .then(() => TextToSpeech(s))
+        //   .then(() => TextToSpeech(s));
         renderBotMarkup(s);
         TextToSpeech(s);
 
-        function createImage(code){
-          var image = document.getElementById("image")
-          image.src = 'data:image/png;base64,'+ code["images"];
+        function createImage(code) {
+          var image = document.getElementById("image");
+          image.src = "data:image/png;base64," + code["images"];
         }
       }
     }
   };
 
-  var sModel = "gpt-3.5-turbo"
+  var sModel = "gpt-3.5-turbo";
   var iMaxTokens = 2048;
   var sUserId = "1";
   var dTemperature = 0.5;
-  var element = document.getElementById("sampleLastMessage").innerHTML
+  var element = document.getElementById("sampleLastMessage").innerHTML;
 
   var data = {
     model: sModel,
     messages: [
       {
-          role: "user",
-          content: element + sQuestion
-      }
+        role: "user",
+        content: element + sQuestion,
+      },
     ],
     max_tokens: iMaxTokens,
     user: sUserId,
     temperature: dTemperature,
-    frequency_penalty: 0.0, //Number between -2.0 and 2.0  
-    //Positive values decrease the model's likelihood 
+    frequency_penalty: 0.0, //Number between -2.0 and 2.0
+    //Positive values decrease the model's likelihood
     //to repeat the same line verbatim.
-    presence_penalty: 0.0,  //Number between -2.0 and 2.0. 
-    //Positive values increase the model's likelihood 
+    presence_penalty: 0.0, //Number between -2.0 and 2.0.
+    //Positive values increase the model's likelihood
     //to talk about new topics.
-    stop: ["#", ";"]        //Up to 4 sequences where the API will stop 
-    //generating further tokens. The returned text 
+    stop: ["#", ";"], //Up to 4 sequences where the API will stop
+    //generating further tokens. The returned text
     //will not contain the stop sequence.
-  }
+  };
 
   oHttp.send(JSON.stringify(data));
 
@@ -434,7 +458,7 @@ function TextToSpeech(s) {
     if (oSpeechRecognizer && chkSpeak.checked) {
       oSpeechRecognizer.start();
     }
-  }
+  };
 
   if (oSpeechRecognizer && chkSpeak.checked) {
     //do not listen to yourself when talking
@@ -443,8 +467,8 @@ function TextToSpeech(s) {
 
   oSpeechSynthesisUtterance.lang = selLang.value;
   oSpeechSynthesisUtterance.text = s;
-  //Uncaught (in promise) Error: A listener indicated an 
-  //asynchronous response by returning true, but the message channel closed 
+  //Uncaught (in promise) Error: A listener indicated an
+  //asynchronous response by returning true, but the message channel closed
   window.speechSynthesis.speak(oSpeechSynthesisUtterance);
 }
 function Mute(b) {
@@ -456,9 +480,7 @@ function Mute(b) {
 }
 
 function SpeechToText() {
-
   if (oSpeechRecognizer) {
-
     if (chkSpeak.checked) {
       oSpeechRecognizer.start();
     } else {
@@ -488,27 +510,25 @@ function SpeechToText() {
       }
 
       var oDiv = document.getElementById("idText");
-      oDiv.innerHTML = '<span style="color: #999;">' +
-        interimTranscripts + '</span>';
+      oDiv.innerHTML =
+        '<span style="color: #999;">' + interimTranscripts + "</span>";
     }
   };
 
-  oSpeechRecognizer.onerror = function (event) {
-
-  };
+  oSpeechRecognizer.onerror = function (event) {};
 }
 function GetLastGPTMessage2() {
-  var textarea = document.getElementById('txtOutput');
+  var textarea = document.getElementById("txtOutput");
   var lastElement = textarea.value.split(/\n/);
   console.log(lastElement);
   var element = document.getElementById("sampleLastMessage");
-  var lastthingy = lastElement.slice(-1)
+  var lastthingy = lastElement.slice(-1);
   element.innerHTML = lastthingy;
 
-  return (lastElement[-1]);
+  return lastElement[-1];
 }
 function GetLastGPTMessage() {
-  var textarea = document.getElementById('txtOutput');
+  var textarea = document.getElementById("txtOutput");
   var lastElement = textarea.value.split(/\n/);
 
   console.log(lastElement);
@@ -521,26 +541,35 @@ function GetLastGPTMessage() {
   // return renderBotMarkup(lastthingy);
 }
 
+function getCurrentTime() {
+  const now = new Date();
+  let hours = now.getHours().toString().padStart(2, "0");
+  let minutes = now.getMinutes().toString().padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
+
 function renderBotMarkup(message) {
-  const messages = document.querySelector('.messages');
+  const messages = document.querySelector(".messages");
+  const currentTime = getCurrentTime();
   const markup = `
     <div class="message new">
         <figure class="avatar">
             <img
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg"
+                src="img/avatar.jpg"
             />
         </figure>${message}
-        <div class="timestamp">22:24</div>
-    </div>`
-  messages.insertAdjacentHTML('beforeend', markup);
-};
+        <div class="timestamp">${currentTime}</div>
+    </div>`;
+  messages.insertAdjacentHTML("beforeend", markup);
+}
 
 function renderUserMarkup(message) {
-  const messages = document.querySelector('.messages');
+  const messages = document.querySelector(".messages");
+  const currentTime = getCurrentTime();
   const markup = `
     <div class="message message-personal new">
         ${message}
-        <div class="timestamp">22:24</div>
-    </div>`
-  messages.insertAdjacentHTML('beforeend', markup);
+        <div class="timestamp">${currentTime}</div>
+    </div>`;
+  messages.insertAdjacentHTML("beforeend", markup);
 }

@@ -15,9 +15,9 @@ namespace DungeonsAndArtificialIntelligenceAPI.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -32,6 +32,10 @@ namespace DungeonsAndArtificialIntelligenceAPI.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
+                    Category = table.Column<int>(type: "int", nullable: false),
+                    World = table.Column<int>(type: "int", nullable: false),
+                    Race = table.Column<int>(type: "int", nullable: false),
+                    Class = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -46,12 +50,33 @@ namespace DungeonsAndArtificialIntelligenceAPI.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserTokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserTokens_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Messages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StoryId = table.Column<int>(type: "int", nullable: false),
                     SentByAI = table.Column<bool>(type: "bit", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -76,12 +101,20 @@ namespace DungeonsAndArtificialIntelligenceAPI.Data.Migrations
                 name: "IX_Stories_UserId",
                 table: "Stories",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTokens_UserId",
+                table: "UserTokens",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "Messages");
+
+            migrationBuilder.DropTable(
+                name: "UserTokens");
 
             migrationBuilder.DropTable(
                 name: "Stories");

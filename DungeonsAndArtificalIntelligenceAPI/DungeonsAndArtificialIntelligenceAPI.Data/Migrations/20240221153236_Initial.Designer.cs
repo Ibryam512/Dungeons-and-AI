@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DungeonsAndArtificialIntelligenceAPI.Data.Migrations
 {
     [DbContext(typeof(DandAIDbContext))]
-    [Migration("20230317234523_AddUserTokenTable")]
-    partial class AddUserTokenTable
+    [Migration("20240221153236_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,7 +42,6 @@ namespace DungeonsAndArtificialIntelligenceAPI.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -60,10 +59,22 @@ namespace DungeonsAndArtificialIntelligenceAPI.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Class")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Race")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("World")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -85,15 +96,12 @@ namespace DungeonsAndArtificialIntelligenceAPI.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -113,7 +121,6 @@ namespace DungeonsAndArtificialIntelligenceAPI.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Token")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
