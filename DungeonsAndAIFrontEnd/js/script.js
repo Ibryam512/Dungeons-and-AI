@@ -34,9 +34,6 @@ document.querySelectorAll(".auth-panel").forEach((item) => {
   });
 });
 
-// password.onchange = validatePassword;
-// confirmPassword.onkeyup = validatePassword;
-
 function Login() {
   let email = document.querySelector("#login-user").value;
   let password = document.querySelector("#login-pass").value;
@@ -51,20 +48,33 @@ function Login() {
   oHttp.setRequestHeader("Accept", "application/json");
   oHttp.setRequestHeader("Content-Type", "application/json");
 
-  oHttp.send(JSON.stringify(params));
-
   oHttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       let response = JSON.parse(oHttp.response);
       localStorage.setItem("token", response.token);
+
       let loginForm = document.querySelector(".login");
       loginForm.style.display = "none";
+
       document.querySelector(".settings__profile-name").innerHTML =
         response.userName;
+      displayStatusMessage("Login successful!", true);
       document.querySelector(".image-container").style.display = "none";
       document.querySelector(".main-container").style.display = "flex";
+    } else {
+      displayStatusMessage(
+        "Login failed. Please, check your credentials.",
+        false
+      );
     }
   };
+
+  oHttp.onerror = function () {
+    // Handle network error
+    displayStatusMessage("Network error. Please try again later.", false);
+  };
+
+  oHttp.send(JSON.stringify(params));
 }
 
 function Register() {
@@ -83,16 +93,29 @@ function Register() {
   oHttp.setRequestHeader("Accept", "application/json");
   oHttp.setRequestHeader("Content-Type", "application/json");
 
-  oHttp.send(JSON.stringify(params));
-
   oHttp.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      let loginForm = document.querySelector(".login");
-      let registrationForm = document.querySelector(".signup");
-      loginForm.style.display = "block";
-      registrationForm.style.display = "none";
+    console.log("ReadyState:", this.readyState, "Status:", this.status);
+    // Check if the request is complete
+    if (this.readyState == 4) {
+      // Now, inside this block, check if the request was successful
+      if (this.status >= 200 && this.status < 300) {
+        // Handle success
+        displayStatusMessage("Registration successful!", true);
+        document.querySelector(".login").style.display = "block";
+        document.querySelector(".signup").style.display = "none";
+      } else {
+        // Handle failure
+        displayStatusMessage("Registration failed. Please, try again.", false);
+      }
     }
   };
+
+  oHttp.onerror = function () {
+    // Handle network error
+    displayStatusMessage("Network error. Please try again later.", false);
+  };
+
+  oHttp.send(JSON.stringify(params));
 }
 
 document.querySelector(".logout-button").addEventListener("click", (event) => {
@@ -128,6 +151,40 @@ function LogOut() {
   document.querySelector(".settings__profile-name").innerHTML = "";
   clearFields();
   hideContainers();
+}
+
+// Redirect the user to the login page using LogOut() on every page load
+window.addEventListener("beforeunload", function (e) {
+  // Attempt to hold the page: modern browsers mostly ignore custom messages here
+  e.preventDefault();
+  e.returnValue = "";
+  LogOut();
+});
+
+function displayStatusMessage(message, isSuccess = true) {
+  const messageElementId = "statusMessage";
+  let messageElement = document.getElementById(messageElementId);
+
+  // If the element doesn't exist, create it
+  if (!messageElement) {
+    messageElement = document.createElement("div");
+    messageElement.id = messageElementId;
+    document.body.appendChild(messageElement); // Adjust where you want to append the message
+  }
+
+  // Update message content and style
+  messageElement.textContent = message;
+  messageElement.style.backgroundColor = isSuccess ? "#5eb956" : "#e03131"; // Example styling
+  messageElement.style.opacity = "1";
+  messageElement.style.visibility = "visible";
+  messageElement.style.pointerEvents = "auto";
+
+  // Hide the message after 2.5 seconds (2500 milliseconds)
+  setTimeout(function () {
+    messageElement.style.opacity = "0";
+    messageElement.style.visibility = "hidden";
+    messageElement.style.pointerEvents = "none";
+  }, 2500);
 }
 
 function GeneratePlayer() {

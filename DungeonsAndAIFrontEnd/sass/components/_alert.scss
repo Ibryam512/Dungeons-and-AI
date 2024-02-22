@@ -1,0 +1,17 @@
+.alert {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+
+  z-index: 10000;
+  padding: 1.5rem;
+  font-size: 1.5rem;
+  position: absolute;
+  color: $color-white;
+  border-radius: 9px;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2rem 4rem rgba($color-black, 0.2);
+  transition: all 0.25s;
+}
