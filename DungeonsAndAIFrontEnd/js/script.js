@@ -388,23 +388,27 @@ function Send() {
         var element = document.getElementById("sampleLastMessage");
         element.innerHTML = s;
         var text = element.innerHTML;
-        // fetch("http://127.0.0.1:7860/sdapi/v1/txt2img", {
-        //   method: "POST",
-        //   body: JSON.stringify({ prompt: text, width: "128", height: "128" }),
-        //   headers: {
-        //     "Content-type": "application/json; charset=UTF-8",
-        //   },
-        // })
-        //   .then((response) => response.json())
-        //   .then((json) => createImage(json))
-        //   .then(() => renderBotMarkup(s))
-        //   .then(() => TextToSpeech(s));
-        renderBotMarkup(s);
-        TextToSpeech(s);
+        fetch("https://api.openai.com/v1/images/generations", {
+          method: "POST",
+          body: JSON.stringify({
+            model: "dall-e-2",
+            prompt: text,
+            n: 1,
+            size: "128x128"
+        }),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + OPENAI_API_KEY
+          },
+        })
+          .then((response) => response.json())
+          .then((json) => createImage(json))
+          .then(() => renderBotMarkup(s))
+          .then(() => TextToSpeech(s));
 
-        function createImage(code) {
+        function createImage(link) {
           var image = document.getElementById("image");
-          image.src = "data:image/png;base64," + code["images"];
+          image.src = link;
         }
       }
     }
