@@ -8,7 +8,7 @@ Welcome to Dungeons and AI, an interactive chat-based adventure game where your 
 - **Multiple Worlds**: Explore various worlds, each with its unique lore, challenges, and characters.
 - **Character Customization**: Create your character by choosing from different races, classes, and backgrounds.
 - **Interactive Chat**: Use the chat interface to interact with the world, make choices, and guide your adventure.
-- **Voice Commands**: Enhanced gameplay experience with voice command features for an immersive storytelling experience.
+- **Voice Commands**: Enhanced gameplay experience with voice command and responses for an immersive storytelling experience.
 
 ## Getting Started
 
