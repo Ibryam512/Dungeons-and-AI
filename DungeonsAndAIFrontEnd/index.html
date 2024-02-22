@@ -285,7 +285,15 @@
               class="message-checkbox"
               type="checkbox"
               onclick="SpeechToText()"
-              /><span class="message-speak-text">Listen</span>
+              /><span class="message-speak-text">Speak</span>
+            </label>
+            <label class="message-speak" id="lblSpeak"
+              ><input
+              id="chkMute"
+              class="message-checkbox"
+              type="checkbox"
+              onclick="Mute(this.checked)"
+              /><span class="message-speak-text">Mute</span>
             </label>
             <button type="submit" class="message-submit" onclick="Send()">
               Send

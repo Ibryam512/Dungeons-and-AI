@@ -388,17 +388,18 @@ function Send() {
         var element = document.getElementById("sampleLastMessage");
         element.innerHTML = s;
         var text = element.innerHTML;
+
         fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",
           body: JSON.stringify({
             model: "dall-e-2",
             prompt: text,
             n: 1,
-            size: "128x128"
-        }),
+            size: "256x256",
+          }),
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + OPENAI_API_KEY
+            Authorization: "Bearer " + OPENAI_API_KEY,
           },
         })
           .then((response) => response.json())
@@ -406,9 +407,21 @@ function Send() {
           .then(() => renderBotMarkup(s))
           .then(() => TextToSpeech(s));
 
-        function createImage(link) {
+        function createImage(responseData) {
           var image = document.getElementById("image");
-          image.src = link;
+          if (
+            responseData &&
+            responseData.data &&
+            responseData.data.length > 0
+          ) {
+            // Extracting the URL from the response
+            var imageUrl = responseData.data[0].url; // Adjust based on actual response structure
+            image.src = imageUrl;
+          } else {
+            console.error(
+              "Failed to generate image or extract URL from response."
+            );
+          }
         }
       }
     }
@@ -451,7 +464,10 @@ function Send() {
 
 function TextToSpeech(s) {
   if (bTextToSpeechSupported == false) return;
-  if (chkMute.checked) return;
+
+  // Fetch the current state of the checkbox directly
+  var chkMute = document.getElementById("chkMute");
+  if (!chkMute || chkMute.checked) return; // Exit if muted
 
   oSpeechSynthesisUtterance = new SpeechSynthesisUtterance();
 
@@ -480,12 +496,13 @@ function TextToSpeech(s) {
   //asynchronous response by returning true, but the message channel closed
   window.speechSynthesis.speak(oSpeechSynthesisUtterance);
 }
-function Mute(b) {
-  if (b) {
-    selVoices.style.display = "none";
-  } else {
-    selVoices.style.display = "";
-  }
+
+function Mute() {
+  document.getElementById("chkMute").addEventListener("change", function () {
+    if (this.checked && window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel(); // Immediately stop any ongoing speech
+    }
+  });
 }
 
 function SpeechToText() {
@@ -517,10 +534,6 @@ function SpeechToText() {
         transcript.replace("\n", "<br>");
         interimTranscripts += transcript;
       }
-
-      var oDiv = document.getElementById("idText");
-      oDiv.innerHTML =
-        '<span style="color: #999;">' + interimTranscripts + "</span>";
     }
   };
 
